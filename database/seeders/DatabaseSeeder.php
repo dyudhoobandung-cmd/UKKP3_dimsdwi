@@ -3,23 +3,37 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use LogicException;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        if (! app()->environment(['local', 'testing'])) {
+            return;
+        }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        foreach (config('demo_accounts') as $role => $account) {
+            if ($account['email'] === null && $account['password'] === null) {
+                continue;
+            }
+
+            if ($account['email'] === null || $account['password'] === null) {
+                throw new LogicException("Both email and password are required for the {$role} demo account.");
+            }
+
+            User::firstOrCreate(
+                ['email' => $account['email']],
+                [
+                    'name' => $role === 'admin' ? 'Administrator' : 'Petugas',
+                    'password' => $account['password'],
+                    'role' => $role,
+                ],
+            );
+        }
     }
 }
