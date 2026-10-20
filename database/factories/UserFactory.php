@@ -17,11 +17,7 @@ class UserFactory extends Factory
      */
     protected static ?string $password;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    /** Menyiapkan data contoh pengguna dengan role customer. */
     public function definition(): array
     {
         return [
@@ -34,9 +30,7 @@ class UserFactory extends Factory
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
+    /** Menyiapkan pengguna contoh yang belum memverifikasi email. */
     public function unverified(): static
     {
         return $this->state(fn (array $attributes) => [

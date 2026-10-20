@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureUserHasRole
 {
+    /** Memastikan role pengguna diizinkan membuka halaman. */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         abort_unless(in_array($request->user()?->role, $roles, true), 403);

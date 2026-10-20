@@ -8,9 +8,7 @@ use LogicException;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
+    /** Membuat akun demo yang diatur untuk local atau testing. */
     public function run(): void
     {
         if (! app()->environment(['local', 'testing'])) {

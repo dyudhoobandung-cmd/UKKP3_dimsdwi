@@ -8,6 +8,7 @@ use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
+    /** Mengarahkan pengguna ke dashboard sesuai role-nya. */
     public function index(Request $request): RedirectResponse
     {
         $route = match ($request->user()->role) {
@@ -20,6 +21,7 @@ class DashboardController extends Controller
         return redirect()->route($route);
     }
 
+    /** Menampilkan dashboard dengan informasi sesuai role pengguna. */
     public function show(Request $request): View
     {
         $role = $request->user()->role;

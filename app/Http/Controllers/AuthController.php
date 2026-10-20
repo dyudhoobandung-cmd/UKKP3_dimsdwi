@@ -11,11 +11,13 @@ use Illuminate\View\View;
 
 class AuthController extends Controller
 {
+    /** Menampilkan formulir login. */
     public function showLogin(): View
     {
         return view('auth.login');
     }
 
+    /** Memeriksa kredensial dan memulai sesi pengguna. */
     public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
@@ -34,11 +36,13 @@ class AuthController extends Controller
         return redirect()->intended(route('dashboard'));
     }
 
+    /** Menampilkan formulir pendaftaran customer. */
     public function showRegistration(): View
     {
         return view('auth.register');
     }
 
+    /** Membuat akun customer baru dan langsung masuk. */
     public function register(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -60,6 +64,7 @@ class AuthController extends Controller
         return redirect()->route('dashboard');
     }
 
+    /** Mengakhiri sesi pengguna dan kembali ke beranda. */
     public function logout(Request $request): RedirectResponse
     {
         Auth::logout();

@@ -11,6 +11,7 @@ class AuthenticationAndRolesTest extends TestCase
 {
     use RefreshDatabase;
 
+    /** Memastikan halaman awal dan autentikasi dapat dibuka oleh pengunjung. */
     public function test_guest_can_view_the_home_login_and_registration_pages(): void
     {
         $this->get(route('home'))->assertOk();
@@ -18,6 +19,7 @@ class AuthenticationAndRolesTest extends TestCase
         $this->get(route('register'))->assertOk();
     }
 
+    /** Memastikan pendaftaran membuat customer walau request mengirim role lain. */
     public function test_registration_creates_and_authenticates_a_customer_only(): void
     {
         $response = $this->post(route('register.store'), [
@@ -36,6 +38,7 @@ class AuthenticationAndRolesTest extends TestCase
         ]);
     }
 
+    /** Memastikan pendaftaran gagal jika konfirmasi password tidak cocok. */
     public function test_registration_rejects_mismatched_password_confirmation(): void
     {
         $this->post(route('register.store'), [
@@ -49,6 +52,7 @@ class AuthenticationAndRolesTest extends TestCase
         $this->assertGuest();
     }
 
+    /** Memastikan login berhasil dan mengarahkan admin ke dashboard yang tepat. */
     public function test_user_can_log_in_and_is_redirected_to_their_role_dashboard(): void
     {
         $user = User::factory()->create([
@@ -67,6 +71,7 @@ class AuthenticationAndRolesTest extends TestCase
         $this->get(route('admin.dashboard'))->assertOk()->assertSee('Administrator');
     }
 
+    /** Memastikan kredensial salah tidak membuat pengguna masuk. */
     public function test_invalid_credentials_do_not_authenticate_the_user(): void
     {
         User::factory()->create(['email' => 'rina@example.com']);
@@ -79,6 +84,7 @@ class AuthenticationAndRolesTest extends TestCase
         $this->assertGuest();
     }
 
+    /** Memastikan pengguna dapat keluar dari akunnya. */
     public function test_user_can_log_out(): void
     {
         $user = User::factory()->create();
@@ -91,6 +97,7 @@ class AuthenticationAndRolesTest extends TestCase
     }
 
     #[DataProvider('roleDashboardCases')]
+    /** Memastikan setiap role dapat membuka dashboard miliknya. */
     public function test_each_role_can_open_its_own_dashboard(string $role, string $route): void
     {
         $this->actingAs(User::factory()->create(['role' => $role]))
@@ -99,6 +106,7 @@ class AuthenticationAndRolesTest extends TestCase
     }
 
     #[DataProvider('forbiddenRoleDashboardCases')]
+    /** Memastikan role ditolak dari dashboard milik role lain. */
     public function test_role_cannot_open_another_roles_dashboard(string $role, string $route): void
     {
         $this->actingAs(User::factory()->create(['role' => $role]))
@@ -106,6 +114,7 @@ class AuthenticationAndRolesTest extends TestCase
             ->assertForbidden();
     }
 
+    /** Menyediakan pasangan role dan route dashboard yang diizinkan. */
     public static function roleDashboardCases(): array
     {
         return [
@@ -115,6 +124,7 @@ class AuthenticationAndRolesTest extends TestCase
         ];
     }
 
+    /** Menyediakan pasangan role dan route dashboard yang harus ditolak. */
     public static function forbiddenRoleDashboardCases(): array
     {
         return [
